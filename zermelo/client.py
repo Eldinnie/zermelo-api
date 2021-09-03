@@ -1,10 +1,11 @@
 import dataclasses
 import logging
+from datetime import datetime
 from typing import List, Union
 
 import requests
 
-from zermelo import Announcement, User, Location
+from zermelo import Announcement, User, Location, Appointment
 
 
 class Client:
@@ -48,7 +49,8 @@ class Client:
         ret = Announcement(**r[0])
         return ret
 
-    def get_users(self, code: List[str] = None, students:bool=False, family:bool=False, employees:bool=False, fields: List[str] = None, schoolInSchoolYear: int = None):
+    def get_users(self, code: List[str] = None, students: bool = False, family: bool = False, employees: bool = False,
+                  fields: List[str] = None, schoolInSchoolYear: int = None):
         if not (students or family or employees) and not code:
             raise TypeError("must supply either one of the bools or specific codes")
 
@@ -66,7 +68,7 @@ class Client:
         ret = [User(**dat) for dat in r]
         return ret
 
-    def get_user(self, code:str, fields: List[str] = None, schoolInSchoolYear: int = None):
+    def get_user(self, code: str, fields: List[str] = None, schoolInSchoolYear: int = None):
         self.logger.debug(f"get_user")
         url = f"{self.base}users/{code}"
         fields = fields or [x.name for x in dataclasses.fields(User)]
@@ -93,9 +95,47 @@ class Client:
         fields = fields or [x.name for x in dataclasses.fields(Location)]
         params = self.params | {"fields": ",".join(fields)}
         if schoolInSchoolYear:
-            params |= {"schoolInSchoolYear": schoolInSchoolYear}
+            params["schoolInSchoolYear"] = schoolInSchoolYear
         if branch:
-            params |= {"branch": branch}
+            params["branch"] = branch
         r = self.get(url, params)
         ret = [Location(**dat) for dat in r]
+        return ret
+
+    def get_appointments(self, start: Union[int, datetime] = None, end: Union[int, datetime] = None,
+                         locations: List[Union[int, Location]] = None, user: List[Union[str, User]] = None, fields: List[str] = None,
+                         schoolInSchoolYear: int = None):
+        self.logger.debug(f"get_appointments")
+        url = f"{self.base}appointments"
+        params = self.params
+        if start:
+            params["start"] = type(start) == int and start or int(start.timestamp())
+        if end:
+            params["end"] = type(end) == int and end or int(end.timestamp())
+        if locations:
+            tmp = []
+            for lok in locations:
+                if type(lok) == int:
+                    tmp.append(str(lok))
+                elif type(lok) == Location:
+                    tmp.append(str(lok.id))
+                else:
+                    raise TypeError("Locations must be a list of either zermelo.Locations or int")
+            params["locations"] = ",".join(tmp)
+        if user:
+            tmp = []
+            for us in user:
+                if type(us) == str:
+                    tmp.append(us)
+                elif type(us) == User:
+                    tmp.append(us.code)
+                else:
+                    raise TypeError("user must be a list of either zermelo.User or str")
+            params["user"] = ",".join(tmp)
+        if fields:
+            params["fields"] = ",".join(fields)
+        if schoolInSchoolYear:
+            params["schoolInSchoolYear"] = schoolInSchoolYear
+        r = self.get(url, params)
+        ret = [Appointment(**dat) for dat in r]
         return ret

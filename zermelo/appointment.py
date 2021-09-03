@@ -12,11 +12,17 @@ class Appointment:
     start: Union[int, datetime] = None
     end: Union[int, datetime] = None
     startTimeSlot: int = None
+    startTimeSlotName: str = None
     endTimeSlot: int = None
+    endTimeSlotName: str = None
+    subjects: str = None
     branch: str = None
     type: str = None
     groupsInDepartments: List[int] = None
     locationsOfBranch: List[int] = None
+    locations: List[int] = None
+    modified: bool = None
+    moved: bool = None
     optional: bool = None
     valid: bool = None
     cancelled: bool = None
@@ -47,17 +53,19 @@ class Appointment:
     availableSpace: int = None
     udmUUID: str = None
     lastModified: Union[int, datetime] = None
-    appointmentLastModified : Union[int, datetime] = None
-    subjectsarray: List[str] = None
+    appointmentLastModified: Union[int, datetime] = None
+    subject: List[str] = None
     teachers: List[User] = None
     onlineTeachers: List[User] = None
     students: list[User] = None
+    branchOfSchool: str = None
+    groups: List[str] = None
 
     def __post_init__(self):
         if self.start:
             self.start = datetime.utcfromtimestamp(self.start)
         if self.end:
-            self.start = datetime.utcfromtimestamp(self.end)
+            self.end = datetime.utcfromtimestamp(self.end)
         if self.created:
             self.created = datetime.utcfromtimestamp(self.created)
         if self.lastModified:
