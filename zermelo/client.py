@@ -48,13 +48,20 @@ class Client:
         ret = Announcement(**r[0])
         return ret
 
-    def get_users(self, students=False, family=False, employees=False, fields: List[str] = None, schoolInSchoolYear: int = None):
+    def get_users(self, code: List[str] = None, students:bool=False, family:bool=False, employees:bool=False, fields: List[str] = None, schoolInSchoolYear: int = None):
+        if not (students or family or employees) and not code:
+            raise TypeError("must supply either one of the bools or specific codes")
+
         self.logger.debug(f"get_users")
         url = f"{self.base}users"
         fields = fields or [x.name for x in dataclasses.fields(User)]
-        params = self.params | {"fields": ",".join(fields), "isStudent": students, "isFamilyMember": family, "isEmployee": employees}
+        params = self.params | {"fields": ",".join(fields)}
         if schoolInSchoolYear:
             params |= {"schoolInSchoolYear": schoolInSchoolYear}
+        if code:
+            params |= {"code": ",".join(code)}
+        else:
+            params |= {"isStudent": students, "isFamilyMember": family, "isEmployee": employees}
         r = self.get(url, params)
         ret = [User(**dat) for dat in r]
         return ret

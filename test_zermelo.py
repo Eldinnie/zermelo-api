@@ -13,6 +13,6 @@ from zermelo import Client
 
 c = Client("ggh", "8g7u81uemhinp329075oi94sl4")
 sisy = c.get_school_in_school_year(2021)["schoolInSchoolYear"]
-r = c.get_location_of_branches(schoolInSchoolYear=sisy)
+r = c.get_users(code=["vb", "ts", "su", "gp"], fields=["code", "displayName"])
 
-pprint(sorted(r, key=lambda x: x.name))
+pprint(r)
