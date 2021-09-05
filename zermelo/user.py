@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime
-from typing import List
+from datetime import datetime, timezone
+from typing import List, Any, Union
 
 
 @dataclass
@@ -21,7 +21,7 @@ class User:
     gender: str = None
     street: str = None
     city: str = None
-    dateOfBirth: int = None
+    dateOfBirth: Union[int, datetime] = None
     userKind: str = None
     schoolInSchoolYears: List[int] = None
     studentSchoolInSchoolYears: List[int] = None
@@ -45,7 +45,8 @@ class User:
     isParentTeacherNightScheduler: bool = None
     isDean: bool = None
     hasPassword: bool = None
+    client: Any = None
 
     def __post_init__(self):
         if self.dateOfBirth:
-            self.dateOfBirth = datetime.utcfromtimestamp(int(self.dateOfBirth))
+            self.dateOfBirth = datetime.fromtimestamp(int(self.dateOfBirth), self.client.utc_offset)

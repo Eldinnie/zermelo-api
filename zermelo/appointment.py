@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime
-from typing import List, Union
+from datetime import datetime, timezone
+from typing import List, Union, Any
 
 from zermelo import User
 
@@ -60,15 +60,16 @@ class Appointment:
     students: list[User] = None
     branchOfSchool: str = None
     groups: List[str] = None
+    client: Any = None
 
     def __post_init__(self):
         if self.start:
-            self.start = datetime.utcfromtimestamp(self.start)
+            self.start = datetime.fromtimestamp(self.start, self.client.utc_offset)
         if self.end:
-            self.end = datetime.utcfromtimestamp(self.end)
+            self.end = datetime.fromtimestamp(self.end, self.client.utc_offset)
         if self.created:
-            self.created = datetime.utcfromtimestamp(self.created)
+            self.created = datetime.fromtimestamp(self.created, self.client.utc_offset)
         if self.lastModified:
-            self.lastModified = datetime.utcfromtimestamp(self.lastModified)
+            self.lastModified = datetime.fromtimestamp(self.lastModified, self.client.utc_offset)
         if self.appointmentLastModified:
-            self.appointmentLastModified = datetime.utcfromtimestamp(self.appointmentLastModified)
+            self.appointmentLastModified = datetime.fromtimestamp(self.appointmentLastModified, self.client.utc_offset)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any
 
 
 @dataclass
@@ -11,3 +11,4 @@ class Location:
     supportsConcurrentAppointments: bool = None
     branchOfSchool: int = None
     secondaryBranches: List[int] = None
+    client: Any = None
