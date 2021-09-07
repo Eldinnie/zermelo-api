@@ -108,10 +108,13 @@ class Client:
 
     def get_appointments(self, start: Union[int, datetime] = None, end: Union[int, datetime] = None,
                          locations: List[Union[int, Location]] = None, user: List[Union[str, User]] = None, fields: List[str] = None,
-                         schoolInSchoolYear: int = None, **kwargs):
+                         schoolInSchoolYear: int = None, appointmentInstance: Union[List[int], int] = None, **kwargs):
         self.logger.debug(f"get_appointments")
         url = f"{self.base}appointments"
-        params = self.params
+        params = {}
+        params = params | self.params
+        if appointmentInstance and type(appointmentInstance) == list:
+            params["appointmentInstance"] = ",".join(str(a) for a in appointmentInstance)
         if start:
             params["start"] = type(start) == int and start or int(start.timestamp())
         if end:
