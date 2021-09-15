@@ -8,24 +8,27 @@ from zermelo import User
 @dataclass
 class Appointment:
     id: int
+    startTimeSlot: int = None
+    startTimeSlotName: str = None
+    locations: List[int] = None
+    subjects: str = None
+    teachers: List[User] = None
+    valid: bool = None
+    cancelled: bool = None
+    base: bool = None
+    changeDescription: str = None
     appointmentInstance: int = None
     start: Union[int, datetime] = None
     end: Union[int, datetime] = None
-    startTimeSlot: int = None
-    startTimeSlotName: str = None
     endTimeSlot: int = None
     endTimeSlotName: str = None
-    subjects: str = None
     branch: str = None
     type: str = None
     groupsInDepartments: List[int] = None
     locationsOfBranch: List[int] = None
-    locations: List[int] = None
     modified: bool = None
     moved: bool = None
     optional: bool = None
-    valid: bool = None
-    cancelled: bool = None
     cancelledReason: str = None  # ['students' or 'teachers' or 'changedPlanning'],
     teacherChanged: bool = None
     groupChanged: bool = None
@@ -35,7 +38,6 @@ class Appointment:
     hidden: bool = None
     commonSchedule: bool = None
     ignoreSubstitutions: bool = None
-    changeDescription: str = None
     schedulerRemark: str = None
     expectedStudentCount: int = None
     expectedStudentCountOnline: int = None
@@ -55,7 +57,6 @@ class Appointment:
     lastModified: Union[int, datetime] = None
     appointmentLastModified: Union[int, datetime] = None
     subject: List[str] = None
-    teachers: List[User] = None
     onlineTeachers: List[User] = None
     students: list[User] = None
     branchOfSchool: str = None
